@@ -26,6 +26,8 @@
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 
+#include "max7219_4x_dot_sm.h"
+
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -67,7 +69,9 @@ void SystemClock_Config(void);
 int main(void)
 {
   /* USER CODE BEGIN 1 */
+
 	uint8_t myTrans[8]; // 1 - for  razryad or Adres; 2- znachenie
+
   /* USER CODE END 1 */
   
 
@@ -92,81 +96,14 @@ int main(void)
   MX_SPI1_Init();
   /* USER CODE BEGIN 2 */
 
-    // test - On
-    myTrans[0] = 0x0F;  myTrans[1] = 0x01;
-    myTrans[2] = 0x0F;  myTrans[3] = 0x01;
-    myTrans[4] = 0x0F;  myTrans[5] = 0x01;
-    myTrans[6] = 0x0F;  myTrans[7] = 0x01;
-    HAL_SPI_Transmit(&hspi1,myTrans,8,1);
-    HAL_GPIO_WritePin(WriteStrob_GPIO_Port,WriteStrob_Pin,SET);
-    HAL_Delay(1);
-    HAL_GPIO_WritePin(WriteStrob_GPIO_Port,WriteStrob_Pin,RESET);
+  max7219_struct h1_max7219 =
+	{
+		.spi		= &hspi1,
+		.cs_port	= WriteStrob_GPIO_Port,
+		.cs_pin		= WriteStrob_Pin
+	};
 
-    HAL_Delay(500);
-
-    // test - Off
-    myTrans[0] = 0x0F;  myTrans[1] = 0x00;
-    myTrans[2] = 0x0F;  myTrans[3] = 0x00;
-    myTrans[4] = 0x0F;  myTrans[5] = 0x00;
-    myTrans[6] = 0x0F;  myTrans[7] = 0x00;
-
-    HAL_SPI_Transmit(&hspi1,myTrans,8,1);
-    HAL_GPIO_WritePin(WriteStrob_GPIO_Port,WriteStrob_Pin,SET);
-    HAL_Delay(1);
-    HAL_GPIO_WritePin(WriteStrob_GPIO_Port,WriteStrob_Pin,RESET);
-    HAL_Delay(1);
-
-    // Decode Mode - No 1 in 1
-    // myTrans[1] hex   -> FF
-    // myTrans[1] pixel -> 00
-    myTrans[0] = 0x09;  myTrans[1] = 0x00;	// pixel
-    myTrans[2] = 0x09;  myTrans[3] = 0x00;	// pixel
-    myTrans[4] = 0x09;  myTrans[5] = 0x00;	// pixel
-    myTrans[6] = 0x09;  myTrans[7] = 0x00;	// pixel
-
-    HAL_SPI_Transmit(&hspi1,myTrans,8,1);
-    HAL_GPIO_WritePin(WriteStrob_GPIO_Port,WriteStrob_Pin,SET);
-    HAL_Delay(1);
-    HAL_GPIO_WritePin(WriteStrob_GPIO_Port,WriteStrob_Pin,RESET);
-    HAL_Delay(1);
-
-    // Intensity 3/32
-    myTrans[0] = 0x0A;  myTrans[1] = 0x01;
-    myTrans[2] = 0x0A;  myTrans[3] = 0x01;
-    myTrans[4] = 0x0A;  myTrans[5] = 0x01;
-    myTrans[6] = 0x0A;  myTrans[7] = 0x01;
-
-    HAL_SPI_Transmit(&hspi1,myTrans,8,1);
-    HAL_GPIO_WritePin(WriteStrob_GPIO_Port,WriteStrob_Pin,SET);
-    HAL_Delay(1);
-    HAL_GPIO_WritePin(WriteStrob_GPIO_Port,WriteStrob_Pin,RESET);
-    HAL_Delay(1);
-
-    //Scan Limit - All
-    myTrans[0] = 0x0B;  myTrans[1] = 0x07;
-    myTrans[2] = 0x0B;  myTrans[3] = 0x07;
-    myTrans[4] = 0x0B;  myTrans[5] = 0x07;
-    myTrans[6] = 0x0B;  myTrans[7] = 0x07;
-
-    HAL_SPI_Transmit(&hspi1,myTrans,8,1);
-    HAL_GPIO_WritePin(WriteStrob_GPIO_Port,WriteStrob_Pin,SET);
-    HAL_Delay(1);
-    HAL_GPIO_WritePin(WriteStrob_GPIO_Port,WriteStrob_Pin,RESET);
-    HAL_Delay(1);
-
-    // Shutdown - none
-    // myTrans[1] -> 00 sleep
-    // myTrans[1] -> 01 work
-    myTrans[0] = 0x0C;  myTrans[1] = 0x01;
-    myTrans[2] = 0x0C;  myTrans[3] = 0x01;
-    myTrans[4] = 0x0C;  myTrans[5] = 0x01;
-    myTrans[6] = 0x0C;  myTrans[7] = 0x01;
-
-    HAL_SPI_Transmit(&hspi1,myTrans,8,1);
-    HAL_GPIO_WritePin(WriteStrob_GPIO_Port,WriteStrob_Pin,SET);
-    HAL_Delay(1);
-    HAL_GPIO_WritePin(WriteStrob_GPIO_Port,WriteStrob_Pin,RESET);
-    HAL_Delay(1);
+  max7219_4x_dot_init(&h1_max7219);
 
   /* USER CODE END 2 */
 
@@ -192,7 +129,7 @@ int main(void)
 	 	  HAL_GPIO_WritePin(WriteStrob_GPIO_Port,WriteStrob_Pin,RESET);
 	 	  HAL_Delay(1);
 	 	}
-	   HAL_Delay(500);
+	   HAL_Delay(100);
 
 	   for (int i=1; i<9; i++)
 	 	{
@@ -211,7 +148,7 @@ int main(void)
 	 	  HAL_GPIO_WritePin(WriteStrob_GPIO_Port,WriteStrob_Pin,RESET);
 	 	  HAL_Delay(1);
 	 	}
-	   HAL_Delay(500);
+	   HAL_Delay(100);
 
 
     /* USER CODE END WHILE */
