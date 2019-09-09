@@ -21,7 +21,6 @@
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
 #include "spi.h"
-#include "usart.h"
 #include "gpio.h"
 
 /* Private includes ----------------------------------------------------------*/
@@ -68,7 +67,7 @@ void SystemClock_Config(void);
 int main(void)
 {
   /* USER CODE BEGIN 1 */
-
+	uint8_t myTrans[8]; // 1 - for  razryad or Adres; 2- znachenie
   /* USER CODE END 1 */
   
 
@@ -90,9 +89,84 @@ int main(void)
 
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
-  MX_USART2_UART_Init();
   MX_SPI1_Init();
   /* USER CODE BEGIN 2 */
+
+    // test - On
+    myTrans[0] = 0x0F;  myTrans[1] = 0x01;
+    myTrans[2] = 0x0F;  myTrans[3] = 0x01;
+    myTrans[4] = 0x0F;  myTrans[5] = 0x01;
+    myTrans[6] = 0x0F;  myTrans[7] = 0x01;
+    HAL_SPI_Transmit(&hspi1,myTrans,8,1);
+    HAL_GPIO_WritePin(WriteStrob_GPIO_Port,WriteStrob_Pin,SET);
+    HAL_Delay(1);
+    HAL_GPIO_WritePin(WriteStrob_GPIO_Port,WriteStrob_Pin,RESET);
+
+    HAL_Delay(500);
+
+    // test - Off
+    myTrans[0] = 0x0F;  myTrans[1] = 0x00;
+    myTrans[2] = 0x0F;  myTrans[3] = 0x00;
+    myTrans[4] = 0x0F;  myTrans[5] = 0x00;
+    myTrans[6] = 0x0F;  myTrans[7] = 0x00;
+
+    HAL_SPI_Transmit(&hspi1,myTrans,8,1);
+    HAL_GPIO_WritePin(WriteStrob_GPIO_Port,WriteStrob_Pin,SET);
+    HAL_Delay(1);
+    HAL_GPIO_WritePin(WriteStrob_GPIO_Port,WriteStrob_Pin,RESET);
+    HAL_Delay(1);
+
+    // Decode Mode - No 1 in 1
+    // myTrans[1] hex   -> FF
+    // myTrans[1] pixel -> 00
+    myTrans[0] = 0x09;  myTrans[1] = 0x00;	// pixel
+    myTrans[2] = 0x09;  myTrans[3] = 0x00;	// pixel
+    myTrans[4] = 0x09;  myTrans[5] = 0x00;	// pixel
+    myTrans[6] = 0x09;  myTrans[7] = 0x00;	// pixel
+
+    HAL_SPI_Transmit(&hspi1,myTrans,8,1);
+    HAL_GPIO_WritePin(WriteStrob_GPIO_Port,WriteStrob_Pin,SET);
+    HAL_Delay(1);
+    HAL_GPIO_WritePin(WriteStrob_GPIO_Port,WriteStrob_Pin,RESET);
+    HAL_Delay(1);
+
+    // Intensity 3/32
+    myTrans[0] = 0x0A;  myTrans[1] = 0x01;
+    myTrans[2] = 0x0A;  myTrans[3] = 0x01;
+    myTrans[4] = 0x0A;  myTrans[5] = 0x01;
+    myTrans[6] = 0x0A;  myTrans[7] = 0x01;
+
+    HAL_SPI_Transmit(&hspi1,myTrans,8,1);
+    HAL_GPIO_WritePin(WriteStrob_GPIO_Port,WriteStrob_Pin,SET);
+    HAL_Delay(1);
+    HAL_GPIO_WritePin(WriteStrob_GPIO_Port,WriteStrob_Pin,RESET);
+    HAL_Delay(1);
+
+    //Scan Limit - All
+    myTrans[0] = 0x0B;  myTrans[1] = 0x07;
+    myTrans[2] = 0x0B;  myTrans[3] = 0x07;
+    myTrans[4] = 0x0B;  myTrans[5] = 0x07;
+    myTrans[6] = 0x0B;  myTrans[7] = 0x07;
+
+    HAL_SPI_Transmit(&hspi1,myTrans,8,1);
+    HAL_GPIO_WritePin(WriteStrob_GPIO_Port,WriteStrob_Pin,SET);
+    HAL_Delay(1);
+    HAL_GPIO_WritePin(WriteStrob_GPIO_Port,WriteStrob_Pin,RESET);
+    HAL_Delay(1);
+
+    // Shutdown - none
+    // myTrans[1] -> 00 sleep
+    // myTrans[1] -> 01 work
+    myTrans[0] = 0x0C;  myTrans[1] = 0x01;
+    myTrans[2] = 0x0C;  myTrans[3] = 0x01;
+    myTrans[4] = 0x0C;  myTrans[5] = 0x01;
+    myTrans[6] = 0x0C;  myTrans[7] = 0x01;
+
+    HAL_SPI_Transmit(&hspi1,myTrans,8,1);
+    HAL_GPIO_WritePin(WriteStrob_GPIO_Port,WriteStrob_Pin,SET);
+    HAL_Delay(1);
+    HAL_GPIO_WritePin(WriteStrob_GPIO_Port,WriteStrob_Pin,RESET);
+    HAL_Delay(1);
 
   /* USER CODE END 2 */
 
@@ -100,6 +174,46 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1)
   {
+
+	  for (int i=1; i<9; i++)
+	 	{
+	 	  myTrans[0] = i; // razryad
+	 	  myTrans[1] = 1UL<<(i-1);; // znachenie
+	 	  myTrans[2] = 9-i; // razryad
+	 	  myTrans[3] = 1UL<<(i-1);; // znachenie
+	 	  myTrans[4] = i; // razryad
+	 	  myTrans[5] = 1UL<<(i-1);; // znachenie
+	 	  myTrans[6] = 9-i; // razryad
+	 	  myTrans[7] = 1UL<<(i-1);; // znachenie
+
+	 	  HAL_SPI_Transmit(&hspi1,myTrans,8,1);
+	 	  HAL_GPIO_WritePin(WriteStrob_GPIO_Port,WriteStrob_Pin,SET);
+	 	  HAL_Delay(1);
+	 	  HAL_GPIO_WritePin(WriteStrob_GPIO_Port,WriteStrob_Pin,RESET);
+	 	  HAL_Delay(1);
+	 	}
+	   HAL_Delay(500);
+
+	   for (int i=1; i<9; i++)
+	 	{
+	 	  myTrans[0] = 9-i; // razryad
+	 	  myTrans[1] = 1UL<<(i-1); // znachenie
+	 	  myTrans[2] = i; // razryad
+	 	  myTrans[3] = 1UL<<(i-1); // znachenie
+	 	  myTrans[4] = 9-i; // razryad
+	 	  myTrans[5] = 1UL<<(i-1); // znachenie
+	 	  myTrans[6] = i; // razryad
+	 	  myTrans[7] = 1UL<<(i-1); // znachenie
+
+	 	  HAL_SPI_Transmit(&hspi1,myTrans,8,1);
+	 	  HAL_GPIO_WritePin(WriteStrob_GPIO_Port,WriteStrob_Pin,SET);
+	 	  HAL_Delay(1);
+	 	  HAL_GPIO_WritePin(WriteStrob_GPIO_Port,WriteStrob_Pin,RESET);
+	 	  HAL_Delay(1);
+	 	}
+	   HAL_Delay(500);
+
+
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
@@ -119,7 +233,7 @@ void SystemClock_Config(void)
   /** Configure the main internal regulator output voltage 
   */
   __HAL_RCC_PWR_CLK_ENABLE();
-  __HAL_PWR_VOLTAGESCALING_CONFIG(PWR_REGULATOR_VOLTAGE_SCALE1);
+  __HAL_PWR_VOLTAGESCALING_CONFIG(PWR_REGULATOR_VOLTAGE_SCALE3);
   /** Initializes the CPU, AHB and APB busses clocks 
   */
   RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSI;
@@ -128,17 +242,11 @@ void SystemClock_Config(void)
   RCC_OscInitStruct.PLL.PLLState = RCC_PLL_ON;
   RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSI;
   RCC_OscInitStruct.PLL.PLLM = 8;
-  RCC_OscInitStruct.PLL.PLLN = 180;
+  RCC_OscInitStruct.PLL.PLLN = 64;
   RCC_OscInitStruct.PLL.PLLP = RCC_PLLP_DIV2;
   RCC_OscInitStruct.PLL.PLLQ = 2;
   RCC_OscInitStruct.PLL.PLLR = 2;
   if (HAL_RCC_OscConfig(&RCC_OscInitStruct) != HAL_OK)
-  {
-    Error_Handler();
-  }
-  /** Activate the Over-Drive mode 
-  */
-  if (HAL_PWREx_EnableOverDrive() != HAL_OK)
   {
     Error_Handler();
   }
@@ -148,10 +256,10 @@ void SystemClock_Config(void)
                               |RCC_CLOCKTYPE_PCLK1|RCC_CLOCKTYPE_PCLK2;
   RCC_ClkInitStruct.SYSCLKSource = RCC_SYSCLKSOURCE_PLLCLK;
   RCC_ClkInitStruct.AHBCLKDivider = RCC_SYSCLK_DIV1;
-  RCC_ClkInitStruct.APB1CLKDivider = RCC_HCLK_DIV4;
+  RCC_ClkInitStruct.APB1CLKDivider = RCC_HCLK_DIV2;
   RCC_ClkInitStruct.APB2CLKDivider = RCC_HCLK_DIV2;
 
-  if (HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_5) != HAL_OK)
+  if (HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_2) != HAL_OK)
   {
     Error_Handler();
   }
