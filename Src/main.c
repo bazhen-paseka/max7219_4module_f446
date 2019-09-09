@@ -69,9 +69,7 @@ void SystemClock_Config(void);
 int main(void)
 {
   /* USER CODE BEGIN 1 */
-
-	uint8_t myTrans[8]; // 1 - for  razryad or Adres; 2- znachenie
-
+	uint8_t digit[10][8];
   /* USER CODE END 1 */
   
 
@@ -107,6 +105,96 @@ int main(void)
 
 	max7219_init(&h1_max7219, NoDecode, Intensity_3, DisplayDigit_0_7, NormalOperation);
 
+	digit[0][7] = 0b00011111 ;
+	digit[0][6] = 0b00010001 ;
+	digit[0][5] = 0b00010001 ;
+	digit[0][4] = 0b00010001 ;
+	digit[0][3] = 0b00010001 ;
+	digit[0][2] = 0b00010001 ;
+	digit[0][1] = 0b00010001 ;
+	digit[0][0] = 0b00011111 ;
+
+	digit[1][7] = 0b00000100 ;
+	digit[1][6] = 0b00001100 ;
+	digit[1][5] = 0b00010100 ;
+	digit[1][4] = 0b00000100 ;
+	digit[1][3] = 0b00000100 ;
+	digit[1][2] = 0b00000100 ;
+	digit[1][1] = 0b00000100 ;
+	digit[1][0] = 0b00011111 ;
+
+	digit[2][7] = 0b00011111 ;
+	digit[2][6] = 0b00000001 ;
+	digit[2][5] = 0b00000001 ;
+	digit[2][4] = 0b00011111 ;
+	digit[2][3] = 0b00010000 ;
+	digit[2][2] = 0b00010000 ;
+	digit[2][1] = 0b00010000 ;
+	digit[2][0] = 0b00011111 ;
+
+	digit[3][7] = 0b00011111 ;
+	digit[3][6] = 0b00000001 ;
+	digit[3][5] = 0b00000001 ;
+	digit[3][4] = 0b00011111 ;
+	digit[3][3] = 0b00000001 ;
+	digit[3][2] = 0b00000001 ;
+	digit[3][1] = 0b00000001 ;
+	digit[3][0] = 0b00011111 ;
+
+	digit[4][7] = 0b00010001 ;
+	digit[4][6] = 0b00010001 ;
+	digit[4][5] = 0b00010001 ;
+	digit[4][4] = 0b00011111 ;
+	digit[4][3] = 0b00000001 ;
+	digit[4][2] = 0b00000001 ;
+	digit[4][1] = 0b00000001 ;
+	digit[4][0] = 0b00000001 ;
+
+	digit[5][7] = 0b00011111 ;
+	digit[5][6] = 0b00010000 ;
+	digit[5][5] = 0b00010000 ;
+	digit[5][4] = 0b00011111 ;
+	digit[5][3] = 0b00000001 ;
+	digit[5][2] = 0b00000001 ;
+	digit[5][1] = 0b00000001 ;
+	digit[5][0] = 0b00011111 ;
+
+	digit[6][7] = 0b00011111 ;
+	digit[6][6] = 0b00010000 ;
+	digit[6][5] = 0b00010000 ;
+	digit[6][4] = 0b00011111 ;
+	digit[6][3] = 0b00010001 ;
+	digit[6][2] = 0b00010001 ;
+	digit[6][1] = 0b00010001 ;
+	digit[6][0] = 0b00011111 ;
+
+	digit[7][7] = 0b00011111 ;
+	digit[7][6] = 0b00000001 ;
+	digit[7][5] = 0b00000001 ;
+	digit[7][4] = 0b00000001 ;
+	digit[7][3] = 0b00000001 ;
+	digit[7][2] = 0b00000001 ;
+	digit[7][1] = 0b00000001 ;
+	digit[7][0] = 0b00000001 ;
+
+	digit[8][7] = 0b00011111 ;
+	digit[8][6] = 0b00010001 ;
+	digit[8][5] = 0b00010001 ;
+	digit[8][4] = 0b00011111 ;
+	digit[8][3] = 0b00010001 ;
+	digit[8][2] = 0b00010001 ;
+	digit[8][1] = 0b00010001 ;
+	digit[8][0] = 0b00011111 ;
+
+	digit[9][7] = 0b00011111 ;
+	digit[9][6] = 0b00010001 ;
+	digit[9][5] = 0b00010001 ;
+	digit[9][4] = 0b00011111 ;
+	digit[9][3] = 0b00000001 ;
+	digit[9][2] = 0b00000001 ;
+	digit[9][1] = 0b00000001 ;
+	digit[9][0] = 0b00011111 ;
+
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -114,59 +202,20 @@ int main(void)
   while (1)
   {
 
-	  for (int i=1; i<9; i++)
-	 	{
-	 	  myTrans[0] = i; // razryad
-	 	  myTrans[1] = 1UL<<(i-1);; // znachenie
-	 	  myTrans[2] = 9-i; // razryad
-	 	  myTrans[3] = 1UL<<(i-1);; // znachenie
-	 	  myTrans[4] = i; // razryad
-	 	  myTrans[5] = 1UL<<(i-1);; // znachenie
-	 	  myTrans[6] = 9-i; // razryad
-	 	  myTrans[7] = 1UL<<(i-1);; // znachenie
-
-	 	  HAL_SPI_Transmit(&hspi1,myTrans,8,1);
-	 	  HAL_GPIO_WritePin(WriteStrob_GPIO_Port,WriteStrob_Pin,SET);
-	 	  HAL_Delay(1);
-	 	  HAL_GPIO_WritePin(WriteStrob_GPIO_Port,WriteStrob_Pin,RESET);
-	 	  HAL_Delay(1);
-	 	}
-	   HAL_Delay(100);
-
-	   for (int i=1; i<9; i++)
-	 	{
-	 	  myTrans[0] = 9-i; // razryad
-	 	  myTrans[1] = 0; // znachenie
-	 	  myTrans[2] = i; // razryad
-	 	  myTrans[3] = 0; // znachenie
-	 	  myTrans[4] = 9-i; // razryad
-	 	  myTrans[5] = 0; // znachenie
-	 	  myTrans[6] = i; // razryad
-	 	  myTrans[7] = 0; // znachenie
-
-	 	  HAL_SPI_Transmit(&hspi1,myTrans,8,1);
-	 	  HAL_GPIO_WritePin(WriteStrob_GPIO_Port,WriteStrob_Pin,SET);
-	 	  HAL_Delay(1);
-	 	  HAL_GPIO_WritePin(WriteStrob_GPIO_Port,WriteStrob_Pin,RESET);
-	 	  HAL_Delay(1);
-	 	}
-	   HAL_Delay(100);
-
+//		for (uint8_t i=0; i<8; i++)
+//		{
+//			h2_max7219_map.kub_0[i] = 0 ;
+//			h2_max7219_map.kub_1[i] = 0 ;
+//			h2_max7219_map.kub_2[i] = 0 ;
+//			h2_max7219_map.kub_3[i] = 0 ;
+//		}
 
 		for (uint8_t i=0; i<8; i++)
 		{
-			h2_max7219_map.kub_0[i] = 0 ;
-			h2_max7219_map.kub_1[i] = 0 ;
-			h2_max7219_map.kub_2[i] = 0 ;
-			h2_max7219_map.kub_3[i] = 0 ;
-		}
-
-		for (uint8_t i=0; i<4; i++)
-		{
-			h2_max7219_map.kub_0[i] = 0b00000001 ;
-			h2_max7219_map.kub_1[i] = 0b00000110 ;
-			h2_max7219_map.kub_2[i] = 0b00111000 ;
-			h2_max7219_map.kub_3[i] = 0b11110000 ;
+		h2_max7219_map.kub_0[i] = digit[1][i]<<2 ;
+		h2_max7219_map.kub_1[i] = digit[2][i]<<3 ;
+		h2_max7219_map.kub_2[i] = digit[3][i]<<0 ;
+		h2_max7219_map.kub_3[i] = digit[5][i]<<1 ;
 		}
 
 		max7219_show_all(&h1_max7219, h2_max7219_map);
