@@ -96,14 +96,16 @@ int main(void)
   MX_SPI1_Init();
   /* USER CODE BEGIN 2 */
 
-  max7219_struct h1_max7219 =
+	max7219_struct h1_max7219 =
 	{
 		.spi		= &hspi1,
 		.cs_port	= WriteStrob_GPIO_Port,
 		.cs_pin		= WriteStrob_Pin
 	};
 
-  max7219_init(&h1_max7219, NoDecode, Intensity_3, DisplayDigit_0_7, NormalOperation);
+	max7219_map h2_max7219_map;
+
+	max7219_init(&h1_max7219, NoDecode, Intensity_3, DisplayDigit_0_7, NormalOperation);
 
   /* USER CODE END 2 */
 
@@ -134,13 +136,13 @@ int main(void)
 	   for (int i=1; i<9; i++)
 	 	{
 	 	  myTrans[0] = 9-i; // razryad
-	 	  myTrans[1] = 1UL<<(i-1); // znachenie
+	 	  myTrans[1] = 0; // znachenie
 	 	  myTrans[2] = i; // razryad
-	 	  myTrans[3] = 1UL<<(i-1); // znachenie
+	 	  myTrans[3] = 0; // znachenie
 	 	  myTrans[4] = 9-i; // razryad
-	 	  myTrans[5] = 1UL<<(i-1); // znachenie
+	 	  myTrans[5] = 0; // znachenie
 	 	  myTrans[6] = i; // razryad
-	 	  myTrans[7] = 1UL<<(i-1); // znachenie
+	 	  myTrans[7] = 0; // znachenie
 
 	 	  HAL_SPI_Transmit(&hspi1,myTrans,8,1);
 	 	  HAL_GPIO_WritePin(WriteStrob_GPIO_Port,WriteStrob_Pin,SET);
@@ -150,6 +152,17 @@ int main(void)
 	 	}
 	   HAL_Delay(100);
 
+
+//		for (int i=1; i<=8; i++)
+//		{
+//			h2_max7219_map.kub_0[i] = 0xFF>>(i-1);
+//			h2_max7219_map.kub_1[i] = 0xFF>>(i-1);
+//			h2_max7219_map.kub_2[i] = 0xFF>>(i-1);
+//			h2_max7219_map.kub_3[i] = 0xFF>>(i-1);
+//		}
+
+		max7219_show_all(&h1_max7219, h2_max7219_map);
+		HAL_Delay(2000);
 
     /* USER CODE END WHILE */
 
