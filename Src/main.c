@@ -103,7 +103,7 @@ int main(void)
 		.cs_pin		= WriteStrob_Pin
 	};
 
-  max7219_init(&h1_max7219);
+  max7219_init(&h1_max7219, NoDecode, Intensity_3, DisplayDigit_0_7, NormalOperation);
 
   /* USER CODE END 2 */
 
