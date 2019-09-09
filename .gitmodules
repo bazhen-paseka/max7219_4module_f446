@@ -1,0 +1,3 @@
+[submodule "Drivers/max7219_4x_dot_sm"]
+	path = Drivers/max7219_4x_dot_sm
+	url = https://github.com/bazhen-paseka/max7219_4x_dot_sm.git
