@@ -153,13 +153,21 @@ int main(void)
 	   HAL_Delay(100);
 
 
-//		for (int i=1; i<=8; i++)
-//		{
-//			h2_max7219_map.kub_0[i] = 0xFF>>(i-1);
-//			h2_max7219_map.kub_1[i] = 0xFF>>(i-1);
-//			h2_max7219_map.kub_2[i] = 0xFF>>(i-1);
-//			h2_max7219_map.kub_3[i] = 0xFF>>(i-1);
-//		}
+		for (uint8_t i=0; i<8; i++)
+		{
+			h2_max7219_map.kub_0[i] = 0 ;
+			h2_max7219_map.kub_1[i] = 0 ;
+			h2_max7219_map.kub_2[i] = 0 ;
+			h2_max7219_map.kub_3[i] = 0 ;
+		}
+
+		for (uint8_t i=0; i<4; i++)
+		{
+			h2_max7219_map.kub_0[i] = 0b00000001 ;
+			h2_max7219_map.kub_1[i] = 0b00000110 ;
+			h2_max7219_map.kub_2[i] = 0b00111000 ;
+			h2_max7219_map.kub_3[i] = 0b11110000 ;
+		}
 
 		max7219_show_all(&h1_max7219, h2_max7219_map);
 		HAL_Delay(2000);
